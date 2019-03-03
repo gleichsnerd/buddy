@@ -25,7 +25,7 @@ module Api::V1
       @address_book = AddressBook.new(address_book_params)
 
       if @address_book.save
-        render json: @address_book, status: :created, location: @address_book
+        render json: @address_book, status: :created
       else
         render json: @address_book.errors, status: :unprocessable_entity
       end
@@ -53,7 +53,7 @@ module Api::V1
 
       # Only allow a trusted parameter "white list" through.
       def address_book_params
-        params.require(:address_book).permit(:user_id, :mailbox_id)
+        params.require(:address).permit(:user_id, :mailbox_id)
       end
   end
 end
