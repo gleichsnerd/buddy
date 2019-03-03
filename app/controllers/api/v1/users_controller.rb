@@ -9,7 +9,7 @@ module Api::V1
 
     # GET /v1/users/{uid}
     def show
-      render json: User.find_by(uid: params[:uid])
+      render json: User.find_by(id: params[:id])
     end
 
   end

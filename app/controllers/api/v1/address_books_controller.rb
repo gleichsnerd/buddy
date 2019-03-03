@@ -14,6 +14,12 @@ module Api::V1
       render json: @address_book
     end
 
+    def user_address_books
+      @address_books = AddressBook.where(user_id: params[:id])
+
+      render json: @address_books
+    end
+
     # POST /address_books
     def create
       @address_book = AddressBook.new(address_book_params)

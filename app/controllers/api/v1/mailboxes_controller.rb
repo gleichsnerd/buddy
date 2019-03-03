@@ -14,12 +14,18 @@ module Api::V1
       render json: @mailbox
     end
 
+    # GET /mailboxes/user/1
+    def user_mailboxes
+      @mailboxes = Mailbox.where(user_id: params[:id])
+      render json: @mailboxes
+    end
+
     # POST /mailboxes
     def create
       @mailbox = Mailbox.new(mailbox_params)
 
       if @mailbox.save
-        render json: @mailbox, status: :created, location: @mailbox
+        render json: @mailbox, status: :created
       else
         render json: @mailbox.errors, status: :unprocessable_entity
       end

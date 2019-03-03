@@ -16,10 +16,11 @@ module Api::V1
 
     # POST /letters
     def create
+      p letter_params
       @letter = Letter.new(letter_params)
 
       if @letter.save
-        render json: @letter, status: :created, location: @letter
+        render json: @letter, status: :created
       else
         render json: @letter.errors, status: :unprocessable_entity
       end
@@ -47,7 +48,7 @@ module Api::V1
 
       # Only allow a trusted parameter "white list" through.
       def letter_params
-        params.require(:letter).permit(:mailbox_id, :sender_id, :recipient_id, :subject, :body)
+        params.require(:letter).permit([:mailbox_id, :sender_id, :recipient_id, :subject, :body]).to_h
       end
   end
 end
