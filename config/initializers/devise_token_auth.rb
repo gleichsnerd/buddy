@@ -46,3 +46,12 @@ DeviseTokenAuth.setup do |config|
   # do so by enabling this flag. NOTE: This feature is highly experimental!
   # config.enable_standard_devise_support = false
 end
+
+DeviseTokenAuth::TokenValidationsController.module_eval do
+    def render_validate_token_success
+        render json: {
+            success: true,
+            user: resource_data(resource_json: @resource.token_validation_response)
+        }
+    end
+end

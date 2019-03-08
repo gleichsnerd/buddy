@@ -1,5 +1,5 @@
-import React from 'react';
-import UserList from '../components/UserList/UserList'
+import React from "react";
+import UserList from "../components/UserList/UserList";
 
 class UserPage extends React.Component {
 
@@ -9,7 +9,7 @@ class UserPage extends React.Component {
                 <h1>
                     Users
                 </h1>
-                <UserList api={this.props.api} auth={this.props.auth} />
+                <UserList/>
             </div>
         );
     }

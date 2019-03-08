@@ -1,166 +1,119 @@
-import React, { Component } from 'react';
-import { instanceOf } from 'prop-types';
-import { withCookies, Cookies } from 'react-cookie';
+import React, { Component } from "react";
+import { instanceOf } from "prop-types";
+import { withCookies, Cookies } from "react-cookie";
 import {
-  BrowserRouter as Router,
-  Route,
-  Link
-} from 'react-router-dom'
-import authRequired from './routes/AuthRequired'
-import HomePage from './routes/HomePage'
-import UserHomePage from './routes/UserHomePage'
-import UserPage from './routes/UserPage'
-import ProfilePage from './routes/ProfilePage'
-import LoginPage from './routes/LoginPage'
-import ApiService from './services/ApiService'
-import AuthService from './services/AuthService'
+    BrowserRouter as Router,
+    Link
+} from "react-router-dom";
 
-import './App.css';
+import ApiService from "./services/ApiService";
+import AuthService from "./services/AuthService";
+import CookieService from "./services/CookieService";
+
+import PublicPrivateRoute from "./routes/PublicPrivateRoute";
+import PrivateRoute from "./routes/PrivateRoute";
+import PublicRoute from "./routes/PublicRoute";
+
+import HomePage from "./routes/HomePage";
+import UserHomePage from "./routes/UserHomePage";
+import UserPage from "./routes/UserPage";
+import ProfilePage from "./routes/ProfilePage";
+import LoginPage from "./routes/LoginPage";
+
+import "./App.css";
 
 class App extends Component {
-  static propTypes = {
-    cookies: instanceOf(Cookies).isRequired
-  };
-
-  constructor(props) {
-    super(props);
-
-    let cookies = props.cookies;
-    
-    let client = cookies.get("client");
-    let token = cookies.get("token");
-    let uid = cookies.get("uid");
-
-    let isLoggedIn = client != null && client !== ""
-      && token != null && token !== ""
-      && uid != null && uid !== "";
-
-    // ApiService = new ApiService(this.updateAuth.bind(this), client, token, uid);
-    this.state = {
-      isLoggedIn: isLoggedIn,
-      uid: uid || "",
-      user: {}
-    };
-  }
-
-  componentWillMount() {
-    if(this.state.isLoggedIn) {
-      this.validateLoggedIn().then(_ => {
-        return ApiService.get(`api/v1/users/${this.state.uid}`);
-      }).then(user => {
-        this.setState({ user: user });
-      }).catch(_ => {
-        this.onLogout();
-      })
+    static get propTypes() {
+        return {
+            cookies: instanceOf(Cookies).isRequired
+        };
     }
-  }
-
-  validateLoggedIn() {
-    return AuthService.validate().then(_ => {
-      this.setState({ isLoggedIn: AuthService.isLoggedIn() });
-    }).catch(_ => {
-      this.setState({ isLoggedIn: AuthService.isLoggedIn() });
-    }).then(user => {
-      this.setState({ user: user });
-    }).catch(error => {
-      console.log(error);
-    });
-  }
-
-  updateAuth(client, token, uid, expires) {
-    const { cookies } = this.props;
-
-    let expireDate = new Date(parseInt(expires, 10));
-
-    cookies.set("client", client, { expires: expireDate });
-    cookies.set("token", token, { expires: expireDate });
-    cookies.set("uid", uid, { expires: expireDate });
-
-    // ApiService.client = client;
-    // ApiService.token = token;
-    // ApiService.uid = uid;
-
-    this.setState({ 
-      isLoggedIn: AuthService.isLoggedIn(),
-      loggedInUser: uid
-    })
-  }
-
-  logout() {
-    AuthService.logout().then(_ => {
-      this.onLogout();
-    })
-  }
-
-  onLogout() {
-    let cookies = this.props.cookies;
-
-    cookies.remove("client");
-    cookies.remove("token");
-    cookies.remove("uid");
-
-    // ApiService = ApiService.new();
-
-    this.setState({ isLoggedIn: AuthService.isLoggedIn() })
-
-    // this.props.history.push('/')
-  }
-
-  render() {
-    let ProppedUserHomePage = authRequired((props) => {
-      return (
-        <UserHomePage
-
-          {...props} />
-      )
-    }, AuthService);
-
-    let ProppedUserPage = authRequired((props) => {
-      return (
-        <UserPage
-
-          {...props} />
-      )}, AuthService);
-
-    let ProppedProfilePage = authRequired((props) => {
-      return (
-        <ProfilePage
-
-          uid={this.state.loggedInUser}
-          {...props} />
-      )
-    }, AuthService);
-
-    let ProppedLoginPage = (props) => {
-      return (
-        <LoginPage
-          onLogin={this.updateAuth.bind(this)}
-
-          {...props} />
-      );
-    };
-
-    return (
-      <Router>
-        <div>
-          <ul>
-
-            <li><Link to="/">Home</Link></li> 
-            <li><Link to="/users">Users</Link></li>
-            {!this.state.isLoggedIn && <li><Link to="/login">Login</Link></li>}
-            {this.state.isLoggedIn && <li><Link to="/profile">Profile</Link></li>}
-            {this.state.isLoggedIn && <h3>{this.state.loggedInUser}</h3>}
-            {this.state.isLoggedIn && <li><a href="/" onClick={this.logout.bind(this)}>Logout</a></li>}
-          </ul>
+  
+    constructor(props) {
+        super(props);
         
-          <Route exact path="/" component={!this.state.isLoggedIn ? HomePage : ProppedUserHomePage} />
-          <Route path="/users" component={ProppedUserPage} />
-          <Route path="/profile" component={ProppedProfilePage} />
-          <Route path="/login" render={ProppedLoginPage} />
-        </div>
-      </Router>
-    );
-  }
+        CookieService.setCookieCollection(props.cookies);
+
+        this.state = {
+            isLoggedIn: false,
+            uid: "",
+            user: {}
+        };
+    }
+
+    componentWillMount() {
+        const { cookies } = this.props;
+
+        const client = cookies.get("client") || null;
+        const token = cookies.get("token") || null;
+        const uid = cookies.get("uid") || null;
+
+        const isLoggedIn = client !== null && token !== null && uid !== null;
+
+        if(isLoggedIn) {
+            this.validateLoggedIn(client, token, uid).then((user) => {
+                if(this.state.isLoggedIn) {
+                    this.setState({ user: user });
+                }
+            }).catch(() => {
+                this.onLogout();
+            });
+        }
+    }
+
+    validateLoggedIn(client, token, uid) {
+        return AuthService.validate(client, token, uid).then((response) => {
+            this.setState({ 
+                isLoggedIn: AuthService.isLoggedIn(),
+            });
+
+            return response.json.user;
+        }).catch(() => {
+            this.setState({ isLoggedIn: AuthService.isLoggedIn() });
+        });
+    }
+
+    updateAuth(client, token, uid, expires, user) {
+        AuthService.updateAuth(client, token, uid);
+        CookieService.updateAuthCookies(client, token, uid, expires);
+
+        this.setState({ 
+            isLoggedIn: AuthService.isLoggedIn(),
+            user: user
+        });
+    }
+
+    logout() {
+        CookieService.clearAuthCookies();
+        AuthService.logout().then(() => {
+            this.onLogout();
+        });
+    }
+
+    onLogout() {
+        this.setState({ isLoggedIn: AuthService.isLoggedIn() });
+    }
+
+    render() {
+        return (
+            <Router>
+                <div>
+                    <ul>
+                        <li><Link to="/">Home</Link></li> 
+                        {!this.state.isLoggedIn && <li><Link to="/login">Login</Link></li>}
+                        {this.state.isLoggedIn && <li><Link to="/profile">Profile</Link></li>}
+                        {this.state.isLoggedIn && <h3>{this.state.user != null && this.state.user.name}</h3>}
+                        {this.state.isLoggedIn && <li><a href="/" onClick={this.logout.bind(this)}>Logout</a></li>}
+                    </ul>
+        
+                    <PublicPrivateRoute path="/" publicComponent={HomePage} privateComponent={UserHomePage}/>
+                    <PrivateRoute path="/users" component={UserPage} componentProps={{ user: this.state.user }} />
+                    <PrivateRoute path="/profile" componentProps={{user: this.state.user}} component={ProfilePage}/>
+                    <PublicRoute path="/login" componentProps={{onLogin: this.updateAuth.bind(this)}} component={LoginPage}/>
+                </div>
+            </Router>
+        );
+    }
 }
 
 export default withCookies(App);

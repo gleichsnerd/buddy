@@ -1,6 +1,6 @@
-import React from 'react';
-import App from './App';
-import { CookiesProvider } from 'react-cookie';
+import React from "react";
+import App from "./App";
+import { CookiesProvider } from "react-cookie";
 
 export default function Root() {
     return (
