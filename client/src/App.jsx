@@ -6,7 +6,6 @@ import {
     Link
 } from "react-router-dom";
 
-import ApiService from "./services/ApiService";
 import AuthService from "./services/AuthService";
 import CookieService from "./services/CookieService";
 
@@ -56,20 +55,23 @@ class App extends Component {
                     this.setState({ user: user });
                 }
             }).catch(() => {
-                this.onLogout();
+                this.logout(true);
             });
         }
     }
 
     validateLoggedIn(client, token, uid) {
-        return AuthService.validate(client, token, uid).then((response) => {
-            this.setState({ 
-                isLoggedIn: AuthService.isLoggedIn(),
-            });
+        return new Promise((resolve, reject) => {
+            return AuthService.validate(client, token, uid).then((response) => {
+                this.setState({ 
+                    isLoggedIn: AuthService.isLoggedIn(),
+                });
 
-            return response.json.user;
-        }).catch(() => {
-            this.setState({ isLoggedIn: AuthService.isLoggedIn() });
+                resolve(response.json.user);
+            }).catch(() => {
+                this.setState({ isLoggedIn: AuthService.isLoggedIn() });
+                reject();
+            });
         });
     }
 
@@ -83,11 +85,13 @@ class App extends Component {
         });
     }
 
-    logout() {
+    logout(validationFailed = false) {
         CookieService.clearAuthCookies();
-        AuthService.logout().then(() => {
-            this.onLogout();
-        });
+        if(!validationFailed) {
+            AuthService.logout().then(() => {
+                this.onLogout();
+            });
+        }
     }
 
     onLogout() {
@@ -102,14 +106,13 @@ class App extends Component {
                         <li><Link to="/">Home</Link></li> 
                         {!this.state.isLoggedIn && <li><Link to="/login">Login</Link></li>}
                         {this.state.isLoggedIn && <li><Link to="/profile">Profile</Link></li>}
-                        {this.state.isLoggedIn && <h3>{this.state.user != null && this.state.user.name}</h3>}
                         {this.state.isLoggedIn && <li><a href="/" onClick={this.logout.bind(this)}>Logout</a></li>}
                     </ul>
         
-                    <PublicPrivateRoute path="/" publicComponent={HomePage} privateComponent={UserHomePage}/>
-                    <PrivateRoute path="/users" component={UserPage} componentProps={{ user: this.state.user }} />
-                    <PrivateRoute path="/profile" componentProps={{user: this.state.user}} component={ProfilePage}/>
-                    <PublicRoute path="/login" componentProps={{onLogin: this.updateAuth.bind(this)}} component={LoginPage}/>
+                    <PublicPrivateRoute exact path="/" isLoggedIn={this.state.isLoggedIn} publicComponent={HomePage} privateComponent={UserHomePage} privateComponentProps={{user: this.state.user}}/>
+                    <PrivateRoute exact path="/users" component={UserPage} componentProps={{ user: this.state.user }} />
+                    <PrivateRoute exact path="/profile" componentProps={{user: this.state.user}} component={ProfilePage}/>
+                    <PublicRoute exact path="/login" componentProps={{onLogin: this.updateAuth.bind(this)}} component={LoginPage}/>
                 </div>
             </Router>
         );

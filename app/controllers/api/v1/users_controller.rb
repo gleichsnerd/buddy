@@ -12,5 +12,10 @@ module Api::V1
       render json: User.find_by(id: params[:id])
     end
 
+    # GET /v1/users/{uid}
+    def show_current_user
+      render json: current_user
+    end
+
   end
 end

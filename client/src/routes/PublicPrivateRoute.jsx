@@ -1,11 +1,11 @@
 import React from "react";
 import PropTypes from "prop-types";
-import AuthService from "../services/AuthService";
 import {
     Route
 } from "react-router-dom";
 
 export default function PublicPrivateRoute({ 
+    isLoggedIn,
     publicComponent: PublicComponent,
     publicComponentProps,
     privateComponent: PrivateComponent,
@@ -16,7 +16,7 @@ export default function PublicPrivateRoute({
         <Route
             {...rest}
             render={props =>
-                AuthService.isLoggedIn() ? (
+                isLoggedIn ? (
                     <PrivateComponent {...props} {...(privateComponentProps || {})} />
                 ) : (
                     <PublicComponent {...props} {...(publicComponentProps || {})} />     
@@ -27,6 +27,7 @@ export default function PublicPrivateRoute({
 }
 
 PublicPrivateRoute.propTypes = {
+    isLoggedIn: PropTypes.bool,
     publicComponent: PropTypes.func,
     privateComponent: PropTypes.func,
     publicComponentProps: PropTypes.object,

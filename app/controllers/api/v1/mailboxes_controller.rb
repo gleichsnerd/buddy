@@ -4,20 +4,18 @@ module Api::V1
 
     # GET /mailboxes
     def index
-      @mailboxes = Mailbox.all
+        @mailboxes = Mailbox.where(user: current_user)
 
-      render json: @mailboxes
+        if params['letters']
+            render json: @mailboxes.as_json(:include => { :letters => {:only => [:id]}})
+        else
+            render json: @mailboxes
+        end
     end
 
     # GET /mailboxes/1
     def show
-      render json: @mailbox
-    end
-
-    # GET /mailboxes/user/1
-    def user_mailboxes
-      @mailboxes = Mailbox.where(user_id: params[:id])
-      render json: @mailboxes
+      render json: @mailbox.as_json
     end
 
     # POST /mailboxes
@@ -55,5 +53,7 @@ module Api::V1
       def mailbox_params
         params.require(:mailbox).permit(:user_id, :alias)
       end
+
+      
   end
 end

@@ -52,7 +52,7 @@ class LoginPage extends React.Component {
 
             onLogin(client, accessToken, uid, expires, response.json.data);
             this.setState({redirectToHome: true});
-        }).catch(error => { throw(error); });
+        }).catch(error => { throw new Error(error); });
     }
 
     render() {

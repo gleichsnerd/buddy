@@ -87,7 +87,7 @@ class AuthService extends HttpRequester {
     validate(client, token, uid) {
         return new Promise((resolve, reject) => {
             this.updateAuth(client, token, uid);
-            this.get("auth/validate_token")
+            return this.get("auth/validate_token")
                 .then(response => {
                     if (response.json.success) {
                         resolve(response);

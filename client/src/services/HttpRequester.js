@@ -1,12 +1,12 @@
 class HttpRequester {
 
     headers() {
-        throw("Headers not overridden");
+        return {};
     }
 
     get(endpoint) {
         return new Promise((resolve, reject) => {
-            window.fetch(encodeURI(endpoint), {
+            fetch(encodeURI(endpoint), {
                 method: "GET",
                 headers: this.headers()
             }).then(response => {
@@ -21,7 +21,7 @@ class HttpRequester {
 
     post(endpoint, body) {
         return new Promise((resolve, reject) => {
-            window.fetch(encodeURI(endpoint), {
+            fetch(encodeURI(endpoint), {
                 method: "POST",
                 headers: this.headers(),
                 body: JSON.stringify(body)
@@ -38,7 +38,7 @@ class HttpRequester {
 
     delete(endpoint) {
         return new Promise((resolve, reject) => {
-            window.fetch(encodeURI(endpoint), {
+            fetch(encodeURI(endpoint), {
                 method: "DELETE",
                 headers: this.headers()
             }).then(response => {

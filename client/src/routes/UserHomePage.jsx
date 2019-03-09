@@ -13,43 +13,70 @@ class UserHomePage extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            user: {}
+            user: props.user,
+            mailboxes: [],
+            hasLetters: false
         };
     }
 
     componentWillMount() {
-        if(this.state.user.id) {
-            this.fetchHomePageDetails();
+        this.fetchHomePageDetails();
+    }
+
+    componentDidUpdate() {
+        if (this.props.user.id !== this.state.user.id) {
+            this.setState({ user: this.props.user });
         }
     }
 
     fetchHomePageDetails() {
-        ApiService.get(`api/v1/users/${this.state.user.id}`).then(response => {
-            this.setState({
-                id: response.json.data.id,
-                name: response.json.data.name,
-                email: response.json.data.email,
-                addressBook: response.json.data.address_books,
-                mailboxes: response.json.data.mailboxes
+        if(this.state.user.id) {
+            ApiService.get("api/v1/user").then(response => {
+                this.setState({
+                    user: {
+                        id: response.json.id,
+                        name: response.json.name,
+                        email: response.json.email
+                    }
+                });
+            }).then(() => {
+                ApiService.get("api/v1/mailboxes?letters=true").then(response => {
+                    const mailboxes = response.json || [];
+                    const filledMailboxes = mailboxes.filter((mailbox) => { mailbox.letters.length > 0; });
+                    this.setState({
+                        mailboxes: mailboxes,
+                        hasLetters: filledMailboxes.length
+                    });
+                });
+            }).catch(error => {
+                console.log(error);
             });
-        }).catch(error => {
-            console.log(error);
-        });
+        }
     }
   
     render() {
-        if (this.state.user.id && !this.state.user.addressBook) {
+        if (this.state.user.id && !this.state.mailboxes.length) {
             this.fetchHomePageDetails();
         }
 
-        if(this.state.name != null) {
+        if (this.state.user.name != null) {
             return (
-                <h1>
-              Hello, {this.state.name}
-                </h1>
+                <div>
+                    <h1>
+                        Hello, {this.state.user.name}
+                    </h1>
+                    <div>
+                        { !this.state.mailboxes.length ? 
+                            <h3>Loading...</h3> :
+                            this.state.hasLetters ?
+                                <div>You have new letters!</div> :
+                                <div>No new letters</div>
+                        }
+                    </div>
+                </div>
             );
         } else {
-            return null;
+            return <div>Loading...</div>;
         }
     }
 }
