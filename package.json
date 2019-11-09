@@ -1,0 +1,8 @@
+{
+  "name": "buddy",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/gleichsnerd/buddy.git",
+  "author": "gleichsnerd",
+  "private": true
+}
