@@ -1,0 +1,14 @@
+{
+  "name": "buddy-server",
+  "version": "1.0.0",
+  "main": "src/index.js",
+  "author": "gleichsnerd",
+  "repository": "https://github.com/gleichsnerd/buddy.git",
+  "private": true,
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "graphql-yoga": "^1.18.3",
+    "jsonwebtoken": "^8.5.1",
+    "prisma-client-lib": "^1.34.10"
+  }
+}
