@@ -1,7 +1,9 @@
-// function links(parent, args, context) {
-//     return context.prisma.user({ id: parent.id }).links()
-// }
+const { prisma } = require('../generated/prisma-client');
 
-// module.exports = {
-//     links,
-// }
+function mailboxes(parent) {
+    return prisma.user({id: parent.id}).mailboxes()
+}
+
+module.exports = {
+    mailboxes
+}

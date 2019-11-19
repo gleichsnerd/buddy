@@ -1,0 +1,5 @@
+type Mailbox {
+    id: ID! @id
+    owner: User!
+    nickname: String!
+}

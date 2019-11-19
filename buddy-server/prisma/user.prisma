@@ -1,6 +1,7 @@
 type User {
   id: ID! @id
-  name: String!
+  alias: String!
   email: String! @unique
   password: String!
+  mailboxes: [Mailbox]
 }

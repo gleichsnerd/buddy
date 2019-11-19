@@ -16,7 +16,7 @@ export type AtLeastOne<T, U = { [K in keyof T]: Pick<T, K> }> = Partial<T> &
 export type Maybe<T> = T | undefined | null;
 
 export interface Exists {
-  link: (where?: LinkWhereInput) => Promise<boolean>;
+  mailbox: (where?: MailboxWhereInput) => Promise<boolean>;
   user: (where?: UserWhereInput) => Promise<boolean>;
 }
 
@@ -39,25 +39,25 @@ export interface Prisma {
    * Queries
    */
 
-  link: (where: LinkWhereUniqueInput) => LinkNullablePromise;
-  links: (args?: {
-    where?: LinkWhereInput;
-    orderBy?: LinkOrderByInput;
+  mailbox: (where: MailboxWhereUniqueInput) => MailboxNullablePromise;
+  mailboxes: (args?: {
+    where?: MailboxWhereInput;
+    orderBy?: MailboxOrderByInput;
     skip?: Int;
     after?: String;
     before?: String;
     first?: Int;
     last?: Int;
-  }) => FragmentableArray<Link>;
-  linksConnection: (args?: {
-    where?: LinkWhereInput;
-    orderBy?: LinkOrderByInput;
+  }) => FragmentableArray<Mailbox>;
+  mailboxesConnection: (args?: {
+    where?: MailboxWhereInput;
+    orderBy?: MailboxOrderByInput;
     skip?: Int;
     after?: String;
     before?: String;
     first?: Int;
     last?: Int;
-  }) => LinkConnectionPromise;
+  }) => MailboxConnectionPromise;
   user: (where: UserWhereUniqueInput) => UserNullablePromise;
   users: (args?: {
     where?: UserWhereInput;
@@ -83,22 +83,22 @@ export interface Prisma {
    * Mutations
    */
 
-  createLink: (data: LinkCreateInput) => LinkPromise;
-  updateLink: (args: {
-    data: LinkUpdateInput;
-    where: LinkWhereUniqueInput;
-  }) => LinkPromise;
-  updateManyLinks: (args: {
-    data: LinkUpdateManyMutationInput;
-    where?: LinkWhereInput;
+  createMailbox: (data: MailboxCreateInput) => MailboxPromise;
+  updateMailbox: (args: {
+    data: MailboxUpdateInput;
+    where: MailboxWhereUniqueInput;
+  }) => MailboxPromise;
+  updateManyMailboxes: (args: {
+    data: MailboxUpdateManyMutationInput;
+    where?: MailboxWhereInput;
   }) => BatchPayloadPromise;
-  upsertLink: (args: {
-    where: LinkWhereUniqueInput;
-    create: LinkCreateInput;
-    update: LinkUpdateInput;
-  }) => LinkPromise;
-  deleteLink: (where: LinkWhereUniqueInput) => LinkPromise;
-  deleteManyLinks: (where?: LinkWhereInput) => BatchPayloadPromise;
+  upsertMailbox: (args: {
+    where: MailboxWhereUniqueInput;
+    create: MailboxCreateInput;
+    update: MailboxUpdateInput;
+  }) => MailboxPromise;
+  deleteMailbox: (where: MailboxWhereUniqueInput) => MailboxPromise;
+  deleteManyMailboxes: (where?: MailboxWhereInput) => BatchPayloadPromise;
   createUser: (data: UserCreateInput) => UserPromise;
   updateUser: (args: {
     data: UserUpdateInput;
@@ -124,9 +124,9 @@ export interface Prisma {
 }
 
 export interface Subscription {
-  link: (
-    where?: LinkSubscriptionWhereInput
-  ) => LinkSubscriptionPayloadSubscription;
+  mailbox: (
+    where?: MailboxSubscriptionWhereInput
+  ) => MailboxSubscriptionPayloadSubscription;
   user: (
     where?: UserSubscriptionWhereInput
   ) => UserSubscriptionPayloadSubscription;
@@ -140,19 +140,17 @@ export interface ClientConstructor<T> {
  * Types
  */
 
-export type LinkOrderByInput =
+export type MailboxOrderByInput =
   | "id_ASC"
   | "id_DESC"
-  | "description_ASC"
-  | "description_DESC"
-  | "url_ASC"
-  | "url_DESC";
+  | "nickname_ASC"
+  | "nickname_DESC";
 
 export type UserOrderByInput =
   | "id_ASC"
   | "id_DESC"
-  | "name_ASC"
-  | "name_DESC"
+  | "alias_ASC"
+  | "alias_DESC"
   | "email_ASC"
   | "email_DESC"
   | "password_ASC"
@@ -160,11 +158,11 @@ export type UserOrderByInput =
 
 export type MutationType = "CREATED" | "UPDATED" | "DELETED";
 
-export type LinkWhereUniqueInput = AtLeastOne<{
+export type MailboxWhereUniqueInput = AtLeastOne<{
   id: Maybe<ID_Input>;
 }>;
 
-export interface LinkWhereInput {
+export interface MailboxWhereInput {
   id?: Maybe<ID_Input>;
   id_not?: Maybe<ID_Input>;
   id_in?: Maybe<ID_Input[] | ID_Input>;
@@ -179,38 +177,24 @@ export interface LinkWhereInput {
   id_not_starts_with?: Maybe<ID_Input>;
   id_ends_with?: Maybe<ID_Input>;
   id_not_ends_with?: Maybe<ID_Input>;
-  description?: Maybe<String>;
-  description_not?: Maybe<String>;
-  description_in?: Maybe<String[] | String>;
-  description_not_in?: Maybe<String[] | String>;
-  description_lt?: Maybe<String>;
-  description_lte?: Maybe<String>;
-  description_gt?: Maybe<String>;
-  description_gte?: Maybe<String>;
-  description_contains?: Maybe<String>;
-  description_not_contains?: Maybe<String>;
-  description_starts_with?: Maybe<String>;
-  description_not_starts_with?: Maybe<String>;
-  description_ends_with?: Maybe<String>;
-  description_not_ends_with?: Maybe<String>;
-  url?: Maybe<String>;
-  url_not?: Maybe<String>;
-  url_in?: Maybe<String[] | String>;
-  url_not_in?: Maybe<String[] | String>;
-  url_lt?: Maybe<String>;
-  url_lte?: Maybe<String>;
-  url_gt?: Maybe<String>;
-  url_gte?: Maybe<String>;
-  url_contains?: Maybe<String>;
-  url_not_contains?: Maybe<String>;
-  url_starts_with?: Maybe<String>;
-  url_not_starts_with?: Maybe<String>;
-  url_ends_with?: Maybe<String>;
-  url_not_ends_with?: Maybe<String>;
-  postedBy?: Maybe<UserWhereInput>;
-  AND?: Maybe<LinkWhereInput[] | LinkWhereInput>;
-  OR?: Maybe<LinkWhereInput[] | LinkWhereInput>;
-  NOT?: Maybe<LinkWhereInput[] | LinkWhereInput>;
+  owner?: Maybe<UserWhereInput>;
+  nickname?: Maybe<String>;
+  nickname_not?: Maybe<String>;
+  nickname_in?: Maybe<String[] | String>;
+  nickname_not_in?: Maybe<String[] | String>;
+  nickname_lt?: Maybe<String>;
+  nickname_lte?: Maybe<String>;
+  nickname_gt?: Maybe<String>;
+  nickname_gte?: Maybe<String>;
+  nickname_contains?: Maybe<String>;
+  nickname_not_contains?: Maybe<String>;
+  nickname_starts_with?: Maybe<String>;
+  nickname_not_starts_with?: Maybe<String>;
+  nickname_ends_with?: Maybe<String>;
+  nickname_not_ends_with?: Maybe<String>;
+  AND?: Maybe<MailboxWhereInput[] | MailboxWhereInput>;
+  OR?: Maybe<MailboxWhereInput[] | MailboxWhereInput>;
+  NOT?: Maybe<MailboxWhereInput[] | MailboxWhereInput>;
 }
 
 export interface UserWhereInput {
@@ -228,20 +212,20 @@ export interface UserWhereInput {
   id_not_starts_with?: Maybe<ID_Input>;
   id_ends_with?: Maybe<ID_Input>;
   id_not_ends_with?: Maybe<ID_Input>;
-  name?: Maybe<String>;
-  name_not?: Maybe<String>;
-  name_in?: Maybe<String[] | String>;
-  name_not_in?: Maybe<String[] | String>;
-  name_lt?: Maybe<String>;
-  name_lte?: Maybe<String>;
-  name_gt?: Maybe<String>;
-  name_gte?: Maybe<String>;
-  name_contains?: Maybe<String>;
-  name_not_contains?: Maybe<String>;
-  name_starts_with?: Maybe<String>;
-  name_not_starts_with?: Maybe<String>;
-  name_ends_with?: Maybe<String>;
-  name_not_ends_with?: Maybe<String>;
+  alias?: Maybe<String>;
+  alias_not?: Maybe<String>;
+  alias_in?: Maybe<String[] | String>;
+  alias_not_in?: Maybe<String[] | String>;
+  alias_lt?: Maybe<String>;
+  alias_lte?: Maybe<String>;
+  alias_gt?: Maybe<String>;
+  alias_gte?: Maybe<String>;
+  alias_contains?: Maybe<String>;
+  alias_not_contains?: Maybe<String>;
+  alias_starts_with?: Maybe<String>;
+  alias_not_starts_with?: Maybe<String>;
+  alias_ends_with?: Maybe<String>;
+  alias_not_ends_with?: Maybe<String>;
   email?: Maybe<String>;
   email_not?: Maybe<String>;
   email_in?: Maybe<String[] | String>;
@@ -270,9 +254,9 @@ export interface UserWhereInput {
   password_not_starts_with?: Maybe<String>;
   password_ends_with?: Maybe<String>;
   password_not_ends_with?: Maybe<String>;
-  links_every?: Maybe<LinkWhereInput>;
-  links_some?: Maybe<LinkWhereInput>;
-  links_none?: Maybe<LinkWhereInput>;
+  mailboxes_every?: Maybe<MailboxWhereInput>;
+  mailboxes_some?: Maybe<MailboxWhereInput>;
+  mailboxes_none?: Maybe<MailboxWhereInput>;
   AND?: Maybe<UserWhereInput[] | UserWhereInput>;
   OR?: Maybe<UserWhereInput[] | UserWhereInput>;
   NOT?: Maybe<UserWhereInput[] | UserWhereInput>;
@@ -283,123 +267,117 @@ export type UserWhereUniqueInput = AtLeastOne<{
   email?: Maybe<String>;
 }>;
 
-export interface LinkCreateInput {
+export interface MailboxCreateInput {
   id?: Maybe<ID_Input>;
-  description: String;
-  url: String;
-  postedBy?: Maybe<UserCreateOneWithoutLinksInput>;
+  owner: UserCreateOneWithoutMailboxesInput;
+  nickname: String;
 }
 
-export interface UserCreateOneWithoutLinksInput {
-  create?: Maybe<UserCreateWithoutLinksInput>;
+export interface UserCreateOneWithoutMailboxesInput {
+  create?: Maybe<UserCreateWithoutMailboxesInput>;
   connect?: Maybe<UserWhereUniqueInput>;
 }
 
-export interface UserCreateWithoutLinksInput {
+export interface UserCreateWithoutMailboxesInput {
   id?: Maybe<ID_Input>;
-  name: String;
+  alias: String;
   email: String;
   password: String;
 }
 
-export interface LinkUpdateInput {
-  description?: Maybe<String>;
-  url?: Maybe<String>;
-  postedBy?: Maybe<UserUpdateOneWithoutLinksInput>;
+export interface MailboxUpdateInput {
+  owner?: Maybe<UserUpdateOneRequiredWithoutMailboxesInput>;
+  nickname?: Maybe<String>;
 }
 
-export interface UserUpdateOneWithoutLinksInput {
-  create?: Maybe<UserCreateWithoutLinksInput>;
-  update?: Maybe<UserUpdateWithoutLinksDataInput>;
-  upsert?: Maybe<UserUpsertWithoutLinksInput>;
-  delete?: Maybe<Boolean>;
-  disconnect?: Maybe<Boolean>;
+export interface UserUpdateOneRequiredWithoutMailboxesInput {
+  create?: Maybe<UserCreateWithoutMailboxesInput>;
+  update?: Maybe<UserUpdateWithoutMailboxesDataInput>;
+  upsert?: Maybe<UserUpsertWithoutMailboxesInput>;
   connect?: Maybe<UserWhereUniqueInput>;
 }
 
-export interface UserUpdateWithoutLinksDataInput {
-  name?: Maybe<String>;
+export interface UserUpdateWithoutMailboxesDataInput {
+  alias?: Maybe<String>;
   email?: Maybe<String>;
   password?: Maybe<String>;
 }
 
-export interface UserUpsertWithoutLinksInput {
-  update: UserUpdateWithoutLinksDataInput;
-  create: UserCreateWithoutLinksInput;
+export interface UserUpsertWithoutMailboxesInput {
+  update: UserUpdateWithoutMailboxesDataInput;
+  create: UserCreateWithoutMailboxesInput;
 }
 
-export interface LinkUpdateManyMutationInput {
-  description?: Maybe<String>;
-  url?: Maybe<String>;
+export interface MailboxUpdateManyMutationInput {
+  nickname?: Maybe<String>;
 }
 
 export interface UserCreateInput {
   id?: Maybe<ID_Input>;
-  name: String;
+  alias: String;
   email: String;
   password: String;
-  links?: Maybe<LinkCreateManyWithoutPostedByInput>;
+  mailboxes?: Maybe<MailboxCreateManyWithoutOwnerInput>;
 }
 
-export interface LinkCreateManyWithoutPostedByInput {
+export interface MailboxCreateManyWithoutOwnerInput {
   create?: Maybe<
-    LinkCreateWithoutPostedByInput[] | LinkCreateWithoutPostedByInput
+    MailboxCreateWithoutOwnerInput[] | MailboxCreateWithoutOwnerInput
   >;
-  connect?: Maybe<LinkWhereUniqueInput[] | LinkWhereUniqueInput>;
+  connect?: Maybe<MailboxWhereUniqueInput[] | MailboxWhereUniqueInput>;
 }
 
-export interface LinkCreateWithoutPostedByInput {
+export interface MailboxCreateWithoutOwnerInput {
   id?: Maybe<ID_Input>;
-  description: String;
-  url: String;
+  nickname: String;
 }
 
 export interface UserUpdateInput {
-  name?: Maybe<String>;
+  alias?: Maybe<String>;
   email?: Maybe<String>;
   password?: Maybe<String>;
-  links?: Maybe<LinkUpdateManyWithoutPostedByInput>;
+  mailboxes?: Maybe<MailboxUpdateManyWithoutOwnerInput>;
 }
 
-export interface LinkUpdateManyWithoutPostedByInput {
+export interface MailboxUpdateManyWithoutOwnerInput {
   create?: Maybe<
-    LinkCreateWithoutPostedByInput[] | LinkCreateWithoutPostedByInput
+    MailboxCreateWithoutOwnerInput[] | MailboxCreateWithoutOwnerInput
   >;
-  delete?: Maybe<LinkWhereUniqueInput[] | LinkWhereUniqueInput>;
-  connect?: Maybe<LinkWhereUniqueInput[] | LinkWhereUniqueInput>;
-  set?: Maybe<LinkWhereUniqueInput[] | LinkWhereUniqueInput>;
-  disconnect?: Maybe<LinkWhereUniqueInput[] | LinkWhereUniqueInput>;
+  delete?: Maybe<MailboxWhereUniqueInput[] | MailboxWhereUniqueInput>;
+  connect?: Maybe<MailboxWhereUniqueInput[] | MailboxWhereUniqueInput>;
+  set?: Maybe<MailboxWhereUniqueInput[] | MailboxWhereUniqueInput>;
+  disconnect?: Maybe<MailboxWhereUniqueInput[] | MailboxWhereUniqueInput>;
   update?: Maybe<
-    | LinkUpdateWithWhereUniqueWithoutPostedByInput[]
-    | LinkUpdateWithWhereUniqueWithoutPostedByInput
+    | MailboxUpdateWithWhereUniqueWithoutOwnerInput[]
+    | MailboxUpdateWithWhereUniqueWithoutOwnerInput
   >;
   upsert?: Maybe<
-    | LinkUpsertWithWhereUniqueWithoutPostedByInput[]
-    | LinkUpsertWithWhereUniqueWithoutPostedByInput
+    | MailboxUpsertWithWhereUniqueWithoutOwnerInput[]
+    | MailboxUpsertWithWhereUniqueWithoutOwnerInput
   >;
-  deleteMany?: Maybe<LinkScalarWhereInput[] | LinkScalarWhereInput>;
+  deleteMany?: Maybe<MailboxScalarWhereInput[] | MailboxScalarWhereInput>;
   updateMany?: Maybe<
-    LinkUpdateManyWithWhereNestedInput[] | LinkUpdateManyWithWhereNestedInput
+    | MailboxUpdateManyWithWhereNestedInput[]
+    | MailboxUpdateManyWithWhereNestedInput
   >;
 }
 
-export interface LinkUpdateWithWhereUniqueWithoutPostedByInput {
-  where: LinkWhereUniqueInput;
-  data: LinkUpdateWithoutPostedByDataInput;
+export interface MailboxUpdateWithWhereUniqueWithoutOwnerInput {
+  where: MailboxWhereUniqueInput;
+  data: MailboxUpdateWithoutOwnerDataInput;
 }
 
-export interface LinkUpdateWithoutPostedByDataInput {
-  description?: Maybe<String>;
-  url?: Maybe<String>;
+export interface MailboxUpdateWithoutOwnerDataInput {
+  nickname?: Maybe<String>;
 }
 
-export interface LinkUpsertWithWhereUniqueWithoutPostedByInput {
-  where: LinkWhereUniqueInput;
-  update: LinkUpdateWithoutPostedByDataInput;
-  create: LinkCreateWithoutPostedByInput;
+export interface MailboxUpsertWithWhereUniqueWithoutOwnerInput {
+  where: MailboxWhereUniqueInput;
+  update: MailboxUpdateWithoutOwnerDataInput;
+  create: MailboxCreateWithoutOwnerInput;
 }
 
-export interface LinkScalarWhereInput {
+export interface MailboxScalarWhereInput {
   id?: Maybe<ID_Input>;
   id_not?: Maybe<ID_Input>;
   id_in?: Maybe<ID_Input[] | ID_Input>;
@@ -414,64 +392,49 @@ export interface LinkScalarWhereInput {
   id_not_starts_with?: Maybe<ID_Input>;
   id_ends_with?: Maybe<ID_Input>;
   id_not_ends_with?: Maybe<ID_Input>;
-  description?: Maybe<String>;
-  description_not?: Maybe<String>;
-  description_in?: Maybe<String[] | String>;
-  description_not_in?: Maybe<String[] | String>;
-  description_lt?: Maybe<String>;
-  description_lte?: Maybe<String>;
-  description_gt?: Maybe<String>;
-  description_gte?: Maybe<String>;
-  description_contains?: Maybe<String>;
-  description_not_contains?: Maybe<String>;
-  description_starts_with?: Maybe<String>;
-  description_not_starts_with?: Maybe<String>;
-  description_ends_with?: Maybe<String>;
-  description_not_ends_with?: Maybe<String>;
-  url?: Maybe<String>;
-  url_not?: Maybe<String>;
-  url_in?: Maybe<String[] | String>;
-  url_not_in?: Maybe<String[] | String>;
-  url_lt?: Maybe<String>;
-  url_lte?: Maybe<String>;
-  url_gt?: Maybe<String>;
-  url_gte?: Maybe<String>;
-  url_contains?: Maybe<String>;
-  url_not_contains?: Maybe<String>;
-  url_starts_with?: Maybe<String>;
-  url_not_starts_with?: Maybe<String>;
-  url_ends_with?: Maybe<String>;
-  url_not_ends_with?: Maybe<String>;
-  AND?: Maybe<LinkScalarWhereInput[] | LinkScalarWhereInput>;
-  OR?: Maybe<LinkScalarWhereInput[] | LinkScalarWhereInput>;
-  NOT?: Maybe<LinkScalarWhereInput[] | LinkScalarWhereInput>;
+  nickname?: Maybe<String>;
+  nickname_not?: Maybe<String>;
+  nickname_in?: Maybe<String[] | String>;
+  nickname_not_in?: Maybe<String[] | String>;
+  nickname_lt?: Maybe<String>;
+  nickname_lte?: Maybe<String>;
+  nickname_gt?: Maybe<String>;
+  nickname_gte?: Maybe<String>;
+  nickname_contains?: Maybe<String>;
+  nickname_not_contains?: Maybe<String>;
+  nickname_starts_with?: Maybe<String>;
+  nickname_not_starts_with?: Maybe<String>;
+  nickname_ends_with?: Maybe<String>;
+  nickname_not_ends_with?: Maybe<String>;
+  AND?: Maybe<MailboxScalarWhereInput[] | MailboxScalarWhereInput>;
+  OR?: Maybe<MailboxScalarWhereInput[] | MailboxScalarWhereInput>;
+  NOT?: Maybe<MailboxScalarWhereInput[] | MailboxScalarWhereInput>;
 }
 
-export interface LinkUpdateManyWithWhereNestedInput {
-  where: LinkScalarWhereInput;
-  data: LinkUpdateManyDataInput;
+export interface MailboxUpdateManyWithWhereNestedInput {
+  where: MailboxScalarWhereInput;
+  data: MailboxUpdateManyDataInput;
 }
 
-export interface LinkUpdateManyDataInput {
-  description?: Maybe<String>;
-  url?: Maybe<String>;
+export interface MailboxUpdateManyDataInput {
+  nickname?: Maybe<String>;
 }
 
 export interface UserUpdateManyMutationInput {
-  name?: Maybe<String>;
+  alias?: Maybe<String>;
   email?: Maybe<String>;
   password?: Maybe<String>;
 }
 
-export interface LinkSubscriptionWhereInput {
+export interface MailboxSubscriptionWhereInput {
   mutation_in?: Maybe<MutationType[] | MutationType>;
   updatedFields_contains?: Maybe<String>;
   updatedFields_contains_every?: Maybe<String[] | String>;
   updatedFields_contains_some?: Maybe<String[] | String>;
-  node?: Maybe<LinkWhereInput>;
-  AND?: Maybe<LinkSubscriptionWhereInput[] | LinkSubscriptionWhereInput>;
-  OR?: Maybe<LinkSubscriptionWhereInput[] | LinkSubscriptionWhereInput>;
-  NOT?: Maybe<LinkSubscriptionWhereInput[] | LinkSubscriptionWhereInput>;
+  node?: Maybe<MailboxWhereInput>;
+  AND?: Maybe<MailboxSubscriptionWhereInput[] | MailboxSubscriptionWhereInput>;
+  OR?: Maybe<MailboxSubscriptionWhereInput[] | MailboxSubscriptionWhereInput>;
+  NOT?: Maybe<MailboxSubscriptionWhereInput[] | MailboxSubscriptionWhereInput>;
 }
 
 export interface UserSubscriptionWhereInput {
@@ -489,52 +452,48 @@ export interface NodeNode {
   id: ID_Output;
 }
 
-export interface Link {
+export interface Mailbox {
   id: ID_Output;
-  description: String;
-  url: String;
+  nickname: String;
 }
 
-export interface LinkPromise extends Promise<Link>, Fragmentable {
+export interface MailboxPromise extends Promise<Mailbox>, Fragmentable {
   id: () => Promise<ID_Output>;
-  description: () => Promise<String>;
-  url: () => Promise<String>;
-  postedBy: <T = UserPromise>() => T;
+  owner: <T = UserPromise>() => T;
+  nickname: () => Promise<String>;
 }
 
-export interface LinkSubscription
-  extends Promise<AsyncIterator<Link>>,
+export interface MailboxSubscription
+  extends Promise<AsyncIterator<Mailbox>>,
     Fragmentable {
   id: () => Promise<AsyncIterator<ID_Output>>;
-  description: () => Promise<AsyncIterator<String>>;
-  url: () => Promise<AsyncIterator<String>>;
-  postedBy: <T = UserSubscription>() => T;
+  owner: <T = UserSubscription>() => T;
+  nickname: () => Promise<AsyncIterator<String>>;
 }
 
-export interface LinkNullablePromise
-  extends Promise<Link | null>,
+export interface MailboxNullablePromise
+  extends Promise<Mailbox | null>,
     Fragmentable {
   id: () => Promise<ID_Output>;
-  description: () => Promise<String>;
-  url: () => Promise<String>;
-  postedBy: <T = UserPromise>() => T;
+  owner: <T = UserPromise>() => T;
+  nickname: () => Promise<String>;
 }
 
 export interface User {
   id: ID_Output;
-  name: String;
+  alias: String;
   email: String;
   password: String;
 }
 
 export interface UserPromise extends Promise<User>, Fragmentable {
   id: () => Promise<ID_Output>;
-  name: () => Promise<String>;
+  alias: () => Promise<String>;
   email: () => Promise<String>;
   password: () => Promise<String>;
-  links: <T = FragmentableArray<Link>>(args?: {
-    where?: LinkWhereInput;
-    orderBy?: LinkOrderByInput;
+  mailboxes: <T = FragmentableArray<Mailbox>>(args?: {
+    where?: MailboxWhereInput;
+    orderBy?: MailboxOrderByInput;
     skip?: Int;
     after?: String;
     before?: String;
@@ -547,12 +506,12 @@ export interface UserSubscription
   extends Promise<AsyncIterator<User>>,
     Fragmentable {
   id: () => Promise<AsyncIterator<ID_Output>>;
-  name: () => Promise<AsyncIterator<String>>;
+  alias: () => Promise<AsyncIterator<String>>;
   email: () => Promise<AsyncIterator<String>>;
   password: () => Promise<AsyncIterator<String>>;
-  links: <T = Promise<AsyncIterator<LinkSubscription>>>(args?: {
-    where?: LinkWhereInput;
-    orderBy?: LinkOrderByInput;
+  mailboxes: <T = Promise<AsyncIterator<MailboxSubscription>>>(args?: {
+    where?: MailboxWhereInput;
+    orderBy?: MailboxOrderByInput;
     skip?: Int;
     after?: String;
     before?: String;
@@ -565,12 +524,12 @@ export interface UserNullablePromise
   extends Promise<User | null>,
     Fragmentable {
   id: () => Promise<ID_Output>;
-  name: () => Promise<String>;
+  alias: () => Promise<String>;
   email: () => Promise<String>;
   password: () => Promise<String>;
-  links: <T = FragmentableArray<Link>>(args?: {
-    where?: LinkWhereInput;
-    orderBy?: LinkOrderByInput;
+  mailboxes: <T = FragmentableArray<Mailbox>>(args?: {
+    where?: MailboxWhereInput;
+    orderBy?: MailboxOrderByInput;
     skip?: Int;
     after?: String;
     before?: String;
@@ -579,25 +538,25 @@ export interface UserNullablePromise
   }) => T;
 }
 
-export interface LinkConnection {
+export interface MailboxConnection {
   pageInfo: PageInfo;
-  edges: LinkEdge[];
+  edges: MailboxEdge[];
 }
 
-export interface LinkConnectionPromise
-  extends Promise<LinkConnection>,
+export interface MailboxConnectionPromise
+  extends Promise<MailboxConnection>,
     Fragmentable {
   pageInfo: <T = PageInfoPromise>() => T;
-  edges: <T = FragmentableArray<LinkEdge>>() => T;
-  aggregate: <T = AggregateLinkPromise>() => T;
+  edges: <T = FragmentableArray<MailboxEdge>>() => T;
+  aggregate: <T = AggregateMailboxPromise>() => T;
 }
 
-export interface LinkConnectionSubscription
-  extends Promise<AsyncIterator<LinkConnection>>,
+export interface MailboxConnectionSubscription
+  extends Promise<AsyncIterator<MailboxConnection>>,
     Fragmentable {
   pageInfo: <T = PageInfoSubscription>() => T;
-  edges: <T = Promise<AsyncIterator<LinkEdgeSubscription>>>() => T;
-  aggregate: <T = AggregateLinkSubscription>() => T;
+  edges: <T = Promise<AsyncIterator<MailboxEdgeSubscription>>>() => T;
+  aggregate: <T = AggregateMailboxSubscription>() => T;
 }
 
 export interface PageInfo {
@@ -623,35 +582,35 @@ export interface PageInfoSubscription
   endCursor: () => Promise<AsyncIterator<String>>;
 }
 
-export interface LinkEdge {
-  node: Link;
+export interface MailboxEdge {
+  node: Mailbox;
   cursor: String;
 }
 
-export interface LinkEdgePromise extends Promise<LinkEdge>, Fragmentable {
-  node: <T = LinkPromise>() => T;
+export interface MailboxEdgePromise extends Promise<MailboxEdge>, Fragmentable {
+  node: <T = MailboxPromise>() => T;
   cursor: () => Promise<String>;
 }
 
-export interface LinkEdgeSubscription
-  extends Promise<AsyncIterator<LinkEdge>>,
+export interface MailboxEdgeSubscription
+  extends Promise<AsyncIterator<MailboxEdge>>,
     Fragmentable {
-  node: <T = LinkSubscription>() => T;
+  node: <T = MailboxSubscription>() => T;
   cursor: () => Promise<AsyncIterator<String>>;
 }
 
-export interface AggregateLink {
+export interface AggregateMailbox {
   count: Int;
 }
 
-export interface AggregateLinkPromise
-  extends Promise<AggregateLink>,
+export interface AggregateMailboxPromise
+  extends Promise<AggregateMailbox>,
     Fragmentable {
   count: () => Promise<Int>;
 }
 
-export interface AggregateLinkSubscription
-  extends Promise<AsyncIterator<AggregateLink>>,
+export interface AggregateMailboxSubscription
+  extends Promise<AsyncIterator<AggregateMailbox>>,
     Fragmentable {
   count: () => Promise<AsyncIterator<Int>>;
 }
@@ -726,51 +685,48 @@ export interface BatchPayloadSubscription
   count: () => Promise<AsyncIterator<Long>>;
 }
 
-export interface LinkSubscriptionPayload {
+export interface MailboxSubscriptionPayload {
   mutation: MutationType;
-  node: Link;
+  node: Mailbox;
   updatedFields: String[];
-  previousValues: LinkPreviousValues;
+  previousValues: MailboxPreviousValues;
 }
 
-export interface LinkSubscriptionPayloadPromise
-  extends Promise<LinkSubscriptionPayload>,
+export interface MailboxSubscriptionPayloadPromise
+  extends Promise<MailboxSubscriptionPayload>,
     Fragmentable {
   mutation: () => Promise<MutationType>;
-  node: <T = LinkPromise>() => T;
+  node: <T = MailboxPromise>() => T;
   updatedFields: () => Promise<String[]>;
-  previousValues: <T = LinkPreviousValuesPromise>() => T;
+  previousValues: <T = MailboxPreviousValuesPromise>() => T;
 }
 
-export interface LinkSubscriptionPayloadSubscription
-  extends Promise<AsyncIterator<LinkSubscriptionPayload>>,
+export interface MailboxSubscriptionPayloadSubscription
+  extends Promise<AsyncIterator<MailboxSubscriptionPayload>>,
     Fragmentable {
   mutation: () => Promise<AsyncIterator<MutationType>>;
-  node: <T = LinkSubscription>() => T;
+  node: <T = MailboxSubscription>() => T;
   updatedFields: () => Promise<AsyncIterator<String[]>>;
-  previousValues: <T = LinkPreviousValuesSubscription>() => T;
+  previousValues: <T = MailboxPreviousValuesSubscription>() => T;
 }
 
-export interface LinkPreviousValues {
+export interface MailboxPreviousValues {
   id: ID_Output;
-  description: String;
-  url: String;
+  nickname: String;
 }
 
-export interface LinkPreviousValuesPromise
-  extends Promise<LinkPreviousValues>,
+export interface MailboxPreviousValuesPromise
+  extends Promise<MailboxPreviousValues>,
     Fragmentable {
   id: () => Promise<ID_Output>;
-  description: () => Promise<String>;
-  url: () => Promise<String>;
+  nickname: () => Promise<String>;
 }
 
-export interface LinkPreviousValuesSubscription
-  extends Promise<AsyncIterator<LinkPreviousValues>>,
+export interface MailboxPreviousValuesSubscription
+  extends Promise<AsyncIterator<MailboxPreviousValues>>,
     Fragmentable {
   id: () => Promise<AsyncIterator<ID_Output>>;
-  description: () => Promise<AsyncIterator<String>>;
-  url: () => Promise<AsyncIterator<String>>;
+  nickname: () => Promise<AsyncIterator<String>>;
 }
 
 export interface UserSubscriptionPayload {
@@ -800,7 +756,7 @@ export interface UserSubscriptionPayloadSubscription
 
 export interface UserPreviousValues {
   id: ID_Output;
-  name: String;
+  alias: String;
   email: String;
   password: String;
 }
@@ -809,7 +765,7 @@ export interface UserPreviousValuesPromise
   extends Promise<UserPreviousValues>,
     Fragmentable {
   id: () => Promise<ID_Output>;
-  name: () => Promise<String>;
+  alias: () => Promise<String>;
   email: () => Promise<String>;
   password: () => Promise<String>;
 }
@@ -818,7 +774,7 @@ export interface UserPreviousValuesSubscription
   extends Promise<AsyncIterator<UserPreviousValues>>,
     Fragmentable {
   id: () => Promise<AsyncIterator<ID_Output>>;
-  name: () => Promise<AsyncIterator<String>>;
+  alias: () => Promise<AsyncIterator<String>>;
   email: () => Promise<AsyncIterator<String>>;
   password: () => Promise<AsyncIterator<String>>;
 }
@@ -852,11 +808,11 @@ export type Long = string;
 
 export const models: Model[] = [
   {
-    name: "Link",
+    name: "User",
     embedded: false
   },
   {
-    name: "User",
+    name: "Mailbox",
     embedded: false
   }
 ];

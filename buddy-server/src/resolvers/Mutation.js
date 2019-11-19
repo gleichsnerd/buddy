@@ -1,59 +1,42 @@
-// const bcrypt = require('bcryptjs')
-// const jwt = require('jsonwebtoken')
-// const { APP_SECRET, getUserId } = require('../utils')
+const bcrypt = require("bcryptjs");
+const { omit } = require("lodash");
 
-// async function signup(parent, args, context, info) {
-//   const password = await bcrypt.hash(args.password, 10)
-//   const user = await context.prisma.createUser({ ...args, password })
+async function signup(parent, args, context, info) {
+  const password = await bcrypt.hash(args.password, 10);
+  const user = omit(await context.prisma.createUser({ ...args, password }), "password");
+  context.session.user = user;
 
-//   const token = jwt.sign({ userId: user.id }, APP_SECRET)
+  return user;
+}
 
-//   const { response } = context;
-//   console.log("response", response)
-//   console.log("response.set", response.set)
-//   console.log("response.cookie", response.cookie)
+async function login(parent, args, context, info) {
+  const user = await context.prisma.user({ email: args.email });
+  if (!user) {
+    throw new Error('No such user found')
+  }
 
-//   // 4
-//   return {
-//     token,
-//     user,
-//   }
-// }
+  const valid = await bcrypt.compare(args.password, user.password)
+  if (!valid) {
+    throw new Error('Invalid password')
+  }
 
-// async function login(parent, args, context, info) {
-//   // 1
-//   const user = await context.prisma.user({ email: args.email })
-//   if (!user) {
-//     throw new Error('No such user found')
-//   }
+  context.session.user = user
 
-//   // 2
-//   const valid = await bcrypt.compare(args.password, user.password)
-//   if (!valid) {
-//     throw new Error('Invalid password')
-//   }
+  return user;
+}
 
-//   const token = jwt.sign({ userId: user.id }, APP_SECRET)
+async function createMailbox(parent, args, context, info) {
+  if(!context.session.user) {
+    throw new Error("You must be signed in to create a user");
+  }
 
-//   // 3
-//   return {
-//     token,
-//     user,
-//   }
-// }
+  const mailbox = await context.prisma.createMailbox({ ...args, owner: { connect: { id: context.session.user.id } } });
 
-// function post(parent, args, context, info) {
-//   const userId = getUserId(context)
-//   return context.prisma.createLink({
-//     url: args.url,
-//     description: args.description,
-//     postedBy: { connect: { id: userId } },
-//   })
-// }
+  return mailbox;
+}
 
-
-// module.exports = {
-//   signup,
-//   login,
-//   post,
-// }
+module.exports = {
+  signup,
+  login,
+  createMailbox
+}

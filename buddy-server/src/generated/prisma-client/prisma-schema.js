@@ -3,7 +3,7 @@ module.exports = {
   // Please don't change this file manually but run `prisma generate` to update it.
   // For more information, please read the docs: https://www.prisma.io/docs/prisma-client/
 
-/* GraphQL */ `type AggregateLink {
+/* GraphQL */ `type AggregateMailbox {
   count: Int!
 }
 
@@ -15,58 +15,54 @@ type BatchPayload {
   count: Long!
 }
 
-type Link {
+scalar Long
+
+type Mailbox {
   id: ID!
-  description: String!
-  url: String!
-  postedBy: User
+  owner: User!
+  nickname: String!
 }
 
-type LinkConnection {
+type MailboxConnection {
   pageInfo: PageInfo!
-  edges: [LinkEdge]!
-  aggregate: AggregateLink!
+  edges: [MailboxEdge]!
+  aggregate: AggregateMailbox!
 }
 
-input LinkCreateInput {
+input MailboxCreateInput {
   id: ID
-  description: String!
-  url: String!
-  postedBy: UserCreateOneWithoutLinksInput
+  owner: UserCreateOneWithoutMailboxesInput!
+  nickname: String!
 }
 
-input LinkCreateManyWithoutPostedByInput {
-  create: [LinkCreateWithoutPostedByInput!]
-  connect: [LinkWhereUniqueInput!]
+input MailboxCreateManyWithoutOwnerInput {
+  create: [MailboxCreateWithoutOwnerInput!]
+  connect: [MailboxWhereUniqueInput!]
 }
 
-input LinkCreateWithoutPostedByInput {
+input MailboxCreateWithoutOwnerInput {
   id: ID
-  description: String!
-  url: String!
+  nickname: String!
 }
 
-type LinkEdge {
-  node: Link!
+type MailboxEdge {
+  node: Mailbox!
   cursor: String!
 }
 
-enum LinkOrderByInput {
+enum MailboxOrderByInput {
   id_ASC
   id_DESC
-  description_ASC
-  description_DESC
-  url_ASC
-  url_DESC
+  nickname_ASC
+  nickname_DESC
 }
 
-type LinkPreviousValues {
+type MailboxPreviousValues {
   id: ID!
-  description: String!
-  url: String!
+  nickname: String!
 }
 
-input LinkScalarWhereInput {
+input MailboxScalarWhereInput {
   id: ID
   id_not: ID
   id_in: [ID!]
@@ -81,107 +77,89 @@ input LinkScalarWhereInput {
   id_not_starts_with: ID
   id_ends_with: ID
   id_not_ends_with: ID
-  description: String
-  description_not: String
-  description_in: [String!]
-  description_not_in: [String!]
-  description_lt: String
-  description_lte: String
-  description_gt: String
-  description_gte: String
-  description_contains: String
-  description_not_contains: String
-  description_starts_with: String
-  description_not_starts_with: String
-  description_ends_with: String
-  description_not_ends_with: String
-  url: String
-  url_not: String
-  url_in: [String!]
-  url_not_in: [String!]
-  url_lt: String
-  url_lte: String
-  url_gt: String
-  url_gte: String
-  url_contains: String
-  url_not_contains: String
-  url_starts_with: String
-  url_not_starts_with: String
-  url_ends_with: String
-  url_not_ends_with: String
-  AND: [LinkScalarWhereInput!]
-  OR: [LinkScalarWhereInput!]
-  NOT: [LinkScalarWhereInput!]
+  nickname: String
+  nickname_not: String
+  nickname_in: [String!]
+  nickname_not_in: [String!]
+  nickname_lt: String
+  nickname_lte: String
+  nickname_gt: String
+  nickname_gte: String
+  nickname_contains: String
+  nickname_not_contains: String
+  nickname_starts_with: String
+  nickname_not_starts_with: String
+  nickname_ends_with: String
+  nickname_not_ends_with: String
+  AND: [MailboxScalarWhereInput!]
+  OR: [MailboxScalarWhereInput!]
+  NOT: [MailboxScalarWhereInput!]
 }
 
-type LinkSubscriptionPayload {
+type MailboxSubscriptionPayload {
   mutation: MutationType!
-  node: Link
+  node: Mailbox
   updatedFields: [String!]
-  previousValues: LinkPreviousValues
+  previousValues: MailboxPreviousValues
 }
 
-input LinkSubscriptionWhereInput {
+input MailboxSubscriptionWhereInput {
   mutation_in: [MutationType!]
   updatedFields_contains: String
   updatedFields_contains_every: [String!]
   updatedFields_contains_some: [String!]
-  node: LinkWhereInput
-  AND: [LinkSubscriptionWhereInput!]
-  OR: [LinkSubscriptionWhereInput!]
-  NOT: [LinkSubscriptionWhereInput!]
+  node: MailboxWhereInput
+  AND: [MailboxSubscriptionWhereInput!]
+  OR: [MailboxSubscriptionWhereInput!]
+  NOT: [MailboxSubscriptionWhereInput!]
 }
 
-input LinkUpdateInput {
-  description: String
-  url: String
-  postedBy: UserUpdateOneWithoutLinksInput
+input MailboxUpdateInput {
+  owner: UserUpdateOneRequiredWithoutMailboxesInput
+  nickname: String
 }
 
-input LinkUpdateManyDataInput {
-  description: String
-  url: String
+input MailboxUpdateManyDataInput {
+  nickname: String
 }
 
-input LinkUpdateManyMutationInput {
-  description: String
-  url: String
+input MailboxUpdateManyMutationInput {
+  nickname: String
 }
 
-input LinkUpdateManyWithoutPostedByInput {
-  create: [LinkCreateWithoutPostedByInput!]
-  delete: [LinkWhereUniqueInput!]
-  connect: [LinkWhereUniqueInput!]
-  set: [LinkWhereUniqueInput!]
-  disconnect: [LinkWhereUniqueInput!]
-  update: [LinkUpdateWithWhereUniqueWithoutPostedByInput!]
-  upsert: [LinkUpsertWithWhereUniqueWithoutPostedByInput!]
-  deleteMany: [LinkScalarWhereInput!]
-  updateMany: [LinkUpdateManyWithWhereNestedInput!]
+input MailboxUpdateManyWithoutOwnerInput {
+  create: [MailboxCreateWithoutOwnerInput!]
+  delete: [MailboxWhereUniqueInput!]
+  connect: [MailboxWhereUniqueInput!]
+  set: [MailboxWhereUniqueInput!]
+  disconnect: [MailboxWhereUniqueInput!]
+  update: [MailboxUpdateWithWhereUniqueWithoutOwnerInput!]
+  upsert: [MailboxUpsertWithWhereUniqueWithoutOwnerInput!]
+  deleteMany: [MailboxScalarWhereInput!]
+  updateMany: [MailboxUpdateManyWithWhereNestedInput!]
 }
 
-input LinkUpdateManyWithWhereNestedInput {
-  where: LinkScalarWhereInput!
-  data: LinkUpdateManyDataInput!
+input MailboxUpdateManyWithWhereNestedInput {
+  where: MailboxScalarWhereInput!
+  data: MailboxUpdateManyDataInput!
 }
 
-input LinkUpdateWithoutPostedByDataInput {
-  description: String
-  url: String
+input MailboxUpdateWithoutOwnerDataInput {
+  nickname: String
 }
 
-input LinkUpdateWithWhereUniqueWithoutPostedByInput {
-  where: LinkWhereUniqueInput!
-  data: LinkUpdateWithoutPostedByDataInput!
+input MailboxUpdateWithWhereUniqueWithoutOwnerInput {
+  where: MailboxWhereUniqueInput!
+  data: MailboxUpdateWithoutOwnerDataInput!
 }
 
-input LinkUpsertWithWhereUniqueWithoutPostedByInput {
-  where: LinkWhereUniqueInput!
-  update: LinkUpdateWithoutPostedByDataInput!
-  create: LinkCreateWithoutPostedByInput!
+input MailboxUpsertWithWhereUniqueWithoutOwnerInput {
+  where: MailboxWhereUniqueInput!
+  update: MailboxUpdateWithoutOwnerDataInput!
+  create: MailboxCreateWithoutOwnerInput!
 }
 
-input LinkWhereInput {
+input MailboxWhereInput {
   id: ID
   id_not: ID
   id_in: [ID!]
@@ -196,53 +174,37 @@ input LinkWhereInput {
   id_not_starts_with: ID
   id_ends_with: ID
   id_not_ends_with: ID
-  description: String
-  description_not: String
-  description_in: [String!]
-  description_not_in: [String!]
-  description_lt: String
-  description_lte: String
-  description_gt: String
-  description_gte: String
-  description_contains: String
-  description_not_contains: String
-  description_starts_with: String
-  description_not_starts_with: String
-  description_ends_with: String
-  description_not_ends_with: String
-  url: String
-  url_not: String
-  url_in: [String!]
-  url_not_in: [String!]
-  url_lt: String
-  url_lte: String
-  url_gt: String
-  url_gte: String
-  url_contains: String
-  url_not_contains: String
-  url_starts_with: String
-  url_not_starts_with: String
-  url_ends_with: String
-  url_not_ends_with: String
-  postedBy: UserWhereInput
-  AND: [LinkWhereInput!]
-  OR: [LinkWhereInput!]
-  NOT: [LinkWhereInput!]
+  owner: UserWhereInput
+  nickname: String
+  nickname_not: String
+  nickname_in: [String!]
+  nickname_not_in: [String!]
+  nickname_lt: String
+  nickname_lte: String
+  nickname_gt: String
+  nickname_gte: String
+  nickname_contains: String
+  nickname_not_contains: String
+  nickname_starts_with: String
+  nickname_not_starts_with: String
+  nickname_ends_with: String
+  nickname_not_ends_with: String
+  AND: [MailboxWhereInput!]
+  OR: [MailboxWhereInput!]
+  NOT: [MailboxWhereInput!]
 }
 
-input LinkWhereUniqueInput {
+input MailboxWhereUniqueInput {
   id: ID
 }
 
-scalar Long
-
 type Mutation {
-  createLink(data: LinkCreateInput!): Link!
-  updateLink(data: LinkUpdateInput!, where: LinkWhereUniqueInput!): Link
-  updateManyLinks(data: LinkUpdateManyMutationInput!, where: LinkWhereInput): BatchPayload!
-  upsertLink(where: LinkWhereUniqueInput!, create: LinkCreateInput!, update: LinkUpdateInput!): Link!
-  deleteLink(where: LinkWhereUniqueInput!): Link
-  deleteManyLinks(where: LinkWhereInput): BatchPayload!
+  createMailbox(data: MailboxCreateInput!): Mailbox!
+  updateMailbox(data: MailboxUpdateInput!, where: MailboxWhereUniqueInput!): Mailbox
+  updateManyMailboxes(data: MailboxUpdateManyMutationInput!, where: MailboxWhereInput): BatchPayload!
+  upsertMailbox(where: MailboxWhereUniqueInput!, create: MailboxCreateInput!, update: MailboxUpdateInput!): Mailbox!
+  deleteMailbox(where: MailboxWhereUniqueInput!): Mailbox
+  deleteManyMailboxes(where: MailboxWhereInput): BatchPayload!
   createUser(data: UserCreateInput!): User!
   updateUser(data: UserUpdateInput!, where: UserWhereUniqueInput!): User
   updateManyUsers(data: UserUpdateManyMutationInput!, where: UserWhereInput): BatchPayload!
@@ -269,9 +231,9 @@ type PageInfo {
 }
 
 type Query {
-  link(where: LinkWhereUniqueInput!): Link
-  links(where: LinkWhereInput, orderBy: LinkOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Link]!
-  linksConnection(where: LinkWhereInput, orderBy: LinkOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): LinkConnection!
+  mailbox(where: MailboxWhereUniqueInput!): Mailbox
+  mailboxes(where: MailboxWhereInput, orderBy: MailboxOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Mailbox]!
+  mailboxesConnection(where: MailboxWhereInput, orderBy: MailboxOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): MailboxConnection!
   user(where: UserWhereUniqueInput!): User
   users(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [User]!
   usersConnection(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): UserConnection!
@@ -279,16 +241,16 @@ type Query {
 }
 
 type Subscription {
-  link(where: LinkSubscriptionWhereInput): LinkSubscriptionPayload
+  mailbox(where: MailboxSubscriptionWhereInput): MailboxSubscriptionPayload
   user(where: UserSubscriptionWhereInput): UserSubscriptionPayload
 }
 
 type User {
   id: ID!
-  name: String!
+  alias: String!
   email: String!
   password: String!
-  links(where: LinkWhereInput, orderBy: LinkOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Link!]
+  mailboxes(where: MailboxWhereInput, orderBy: MailboxOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Mailbox!]
 }
 
 type UserConnection {
@@ -299,20 +261,20 @@ type UserConnection {
 
 input UserCreateInput {
   id: ID
-  name: String!
+  alias: String!
   email: String!
   password: String!
-  links: LinkCreateManyWithoutPostedByInput
+  mailboxes: MailboxCreateManyWithoutOwnerInput
 }
 
-input UserCreateOneWithoutLinksInput {
-  create: UserCreateWithoutLinksInput
+input UserCreateOneWithoutMailboxesInput {
+  create: UserCreateWithoutMailboxesInput
   connect: UserWhereUniqueInput
 }
 
-input UserCreateWithoutLinksInput {
+input UserCreateWithoutMailboxesInput {
   id: ID
-  name: String!
+  alias: String!
   email: String!
   password: String!
 }
@@ -325,8 +287,8 @@ type UserEdge {
 enum UserOrderByInput {
   id_ASC
   id_DESC
-  name_ASC
-  name_DESC
+  alias_ASC
+  alias_DESC
   email_ASC
   email_DESC
   password_ASC
@@ -335,7 +297,7 @@ enum UserOrderByInput {
 
 type UserPreviousValues {
   id: ID!
-  name: String!
+  alias: String!
   email: String!
   password: String!
 }
@@ -359,36 +321,34 @@ input UserSubscriptionWhereInput {
 }
 
 input UserUpdateInput {
-  name: String
+  alias: String
   email: String
   password: String
-  links: LinkUpdateManyWithoutPostedByInput
+  mailboxes: MailboxUpdateManyWithoutOwnerInput
 }
 
 input UserUpdateManyMutationInput {
-  name: String
+  alias: String
   email: String
   password: String
 }
 
-input UserUpdateOneWithoutLinksInput {
-  create: UserCreateWithoutLinksInput
-  update: UserUpdateWithoutLinksDataInput
-  upsert: UserUpsertWithoutLinksInput
-  delete: Boolean
-  disconnect: Boolean
+input UserUpdateOneRequiredWithoutMailboxesInput {
+  create: UserCreateWithoutMailboxesInput
+  update: UserUpdateWithoutMailboxesDataInput
+  upsert: UserUpsertWithoutMailboxesInput
   connect: UserWhereUniqueInput
 }
 
-input UserUpdateWithoutLinksDataInput {
-  name: String
+input UserUpdateWithoutMailboxesDataInput {
+  alias: String
   email: String
   password: String
 }
 
-input UserUpsertWithoutLinksInput {
-  update: UserUpdateWithoutLinksDataInput!
-  create: UserCreateWithoutLinksInput!
+input UserUpsertWithoutMailboxesInput {
+  update: UserUpdateWithoutMailboxesDataInput!
+  create: UserCreateWithoutMailboxesInput!
 }
 
 input UserWhereInput {
@@ -406,20 +366,20 @@ input UserWhereInput {
   id_not_starts_with: ID
   id_ends_with: ID
   id_not_ends_with: ID
-  name: String
-  name_not: String
-  name_in: [String!]
-  name_not_in: [String!]
-  name_lt: String
-  name_lte: String
-  name_gt: String
-  name_gte: String
-  name_contains: String
-  name_not_contains: String
-  name_starts_with: String
-  name_not_starts_with: String
-  name_ends_with: String
-  name_not_ends_with: String
+  alias: String
+  alias_not: String
+  alias_in: [String!]
+  alias_not_in: [String!]
+  alias_lt: String
+  alias_lte: String
+  alias_gt: String
+  alias_gte: String
+  alias_contains: String
+  alias_not_contains: String
+  alias_starts_with: String
+  alias_not_starts_with: String
+  alias_ends_with: String
+  alias_not_ends_with: String
   email: String
   email_not: String
   email_in: [String!]
@@ -448,9 +408,9 @@ input UserWhereInput {
   password_not_starts_with: String
   password_ends_with: String
   password_not_ends_with: String
-  links_every: LinkWhereInput
-  links_some: LinkWhereInput
-  links_none: LinkWhereInput
+  mailboxes_every: MailboxWhereInput
+  mailboxes_some: MailboxWhereInput
+  mailboxes_none: MailboxWhereInput
   AND: [UserWhereInput!]
   OR: [UserWhereInput!]
   NOT: [UserWhereInput!]
